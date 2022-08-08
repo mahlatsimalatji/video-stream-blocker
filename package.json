@@ -1,0 +1,19 @@
+{
+  "name": "video-stream-blocker",
+  "version": "1.0.0",
+  "description": "API to check user video streams",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahlatsimalatji/video-stream-blocker.git"
+  },
+  "author": "Mahlatsi Potsane",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mahlatsimalatji/video-stream-blocker/issues"
+  },
+  "homepage": "https://github.com/mahlatsimalatji/video-stream-blocker#readme"
+}
