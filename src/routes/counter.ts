@@ -18,6 +18,17 @@ router.get('/:username', [], async (req:Request,res:Response) => {
         await newUserStream.save()
 
         res.status(201).send(newUserStream)
+
+        console.log(user+ " started streaming")
+    } else {
+        if(userStreamCount.count >= 3){ 
+            res.status(403).send("Maximum streaming devices reached")
+        } else {
+            userStreamCount.count += 1
+            await userStreamCount.save()
+            res.status(204).send(userStreamCount)
+            console.log("Additional stream: ",userStreamCount.count)
+        }
     }
     return res.send('')
 })
