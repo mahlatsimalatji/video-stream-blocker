@@ -22,3 +22,8 @@ app.listen(3000, () => {
     console.log("listening to server 3000")
 })
 
+
+
+export default app;
+
+
