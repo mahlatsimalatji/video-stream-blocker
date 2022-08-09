@@ -55,6 +55,21 @@ All the different build steps are orchestrated via [npm scripts](https://docs.np
 | `test`                    | Runs build and run tests using jest. Can be invoked with `npx tst`        |
 
 
-### Running the application using Docker
+### Running the api using Docker
 Build a docker image: docker build . -t <your username>/video-stream-blocker 
 Run docker container: docker run -p 3000:8080 -d <your username>/video-stream-blocker 
+
+### Accessing the api resources
+The resources can be access at:
+    http://localhost:8080:/connect/<username> - to add streaming device
+    http://localhost:8080:/disconnect/<username> - to add remove streaming device
+
+
+### Deploying the api 
+run ./deploy/deploy.sh to build and push docker image to ECR
+Provision cloud tools using ./deploy/cloudformation/deploy-api.yml 
+
+
+###  Serverless deployment
+Client ---REST Api--> API Gateway ---Proxy Request--> Lambda ---CRUD--> DynamoDB
+
