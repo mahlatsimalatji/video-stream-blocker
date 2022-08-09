@@ -6,7 +6,7 @@ const PORT : number = 8000
 
 
 
-// Creating server to listen at localhost 3000
+// Creating server to listen at localhost 8000
 app.listen(PORT, () => {
   // Logging when the server has started
   console.log("listening to server on "+PORT)
@@ -17,7 +17,8 @@ beforeAll(done => {
 })
 
 afterAll(done => {
-  // Closing the DB connection allows Jest to exit successfully.
+  // TODO 
+  // close the DB connection to allow Jest to exit successfully. 
   mongoose.disconnect()
   mongoose.connection.close()
   done()
