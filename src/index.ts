@@ -4,6 +4,9 @@ import {userStreamRouter} from './routes/userStreamRoute';
 
 import mongoose from 'mongoose';
 
+// Constants
+const PORT = 3000;
+const HOST = '0.0.0.0';
 
 const app = express()
 app.use(json())
@@ -17,9 +20,9 @@ mongoose.connect('mongodb+srv://admin:EfcxUwEJj4iR4SI9@mahlatsicluster0.vyhk7xy.
     })
 
 // Creating server to listen at localhost 3000
-app.listen(3000, () => {
+app.listen(PORT,HOST, () => {
     // Logging when the server has started
-    console.log("listening to server 3000")
+    console.log(`listening to server on http://${HOST}:${PORT}`)
 })
 
 
