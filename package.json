@@ -4,7 +4,8 @@
   "description": "API to check user video streams",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev ./src/index.ts",
+    "dev": "ts-node-dev ./src/index.ts",
+    "start": "tsc && node dist/index.js",
     "test": "jest"
   },
   "repository": {
