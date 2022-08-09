@@ -56,13 +56,13 @@ All the different build steps are orchestrated via [npm scripts](https://docs.np
 
 
 ### Running the api using Docker
-Build a docker image: docker build . -t <your username>/video-stream-blocker 
+Build a docker image: docker build . -t {your username}/video-stream-blocker 
 Run docker container: docker run -p 3000:8080 -d <your username>/video-stream-blocker 
 
 ### Accessing the api resources
 The resources can be access at:
-    http://localhost:8080:/connect/<username> - to add streaming device
-    http://localhost:8080:/disconnect/<username> - to add remove streaming device
+    http://localhost:8080:/connect/{username} - to add streaming device
+    http://localhost:8080:/disconnect/{username} - to add remove streaming device
 
 
 ### Deploying the api 
