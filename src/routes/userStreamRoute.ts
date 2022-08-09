@@ -4,11 +4,28 @@ import {UserStreamCount} from "../models/userStreamCount";
 
 const router = express.Router();
 
-router.get('/:username', [], async (req:Request,res:Response) => {
-    let user = req.params.username
-
+router.get('/disconnect/:username', [], async (req:Request,res:Response) => {
+    let user:string = req.params.username
     let userStreamCount = await UserStreamCount.findOne({username: user})
 
+    if(userStreamCount == null){
+        return res.status(403).send("User has not started streaming")
+    } else {
+        if(userStreamCount.count > 0){
+            userStreamCount.count -= 1
+            await userStreamCount.save()
+            console.log("Removing stream: ",userStreamCount.count," for user: ",userStreamCount.username)
+            return res.status(200).send(userStreamCount)       
+        }    
+    }
+})
+
+
+router.get('/connect/:username', [], async (req:Request,res:Response) => {
+    let user:string = req.params.username
+    let userStreamCount = await UserStreamCount.findOne({username: user})
+
+       
     if(userStreamCount == null){
         let newUserStream = new UserStreamCount({
             username: user,
@@ -26,11 +43,12 @@ router.get('/:username', [], async (req:Request,res:Response) => {
         } else {
             userStreamCount.count += 1
             await userStreamCount.save()
-            console.log("Additional stream: ",userStreamCount.count)
+            console.log("Additional stream: ",userStreamCount.count," for user: ",userStreamCount.username)
 
             return res.status(200).send(userStreamCount)
         }
     }
 })
+
 
 export {router as userStreamRouter}
