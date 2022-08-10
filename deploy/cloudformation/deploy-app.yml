@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  AWS CloudFormation template to create a new VPC
+  to work with Fargate
+Resources:
+  APITaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ExecutionRoleArn: "arn:aws:iam::331851903969:role/ecsTaskExecutionRole"
+      RequiresCompatibilities:
+        - "FARGATE"
+      Cpu: 256
+      Memory: 512
+      NetworkMode: "awsvpc"
+      ContainerDefinitions:
+        - Name: "video-stream-blocker-container"
+          Image: "331851903969.dkr.ecr.af-south-1.amazonaws.com/video-stream-blocker:latest"
+          MemoryReservation: 256
+          Memory: 512
+          PortMappings:
+            - ContainerPort: 8080
+              Protocol: tcp
+  APIECSCluster:
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: video-stream-blocker-cluster
+  APIECSService:
+    Type: AWS::ECS::Service
+    DependsOn:
+      - Listener
+    Properties:
+      LaunchType: FARGATE
+      Cluster:
+        Ref: "ECSCluster"
+      DesiredCount: 2
+      LoadBalancers:
+        - TargetGroupArn:
+            Ref: FargateTargetGroup
+          ContainerPort: 8080
+          ContainerName: video-stream-blocker-container
+      TaskDefinition:
+        Ref: "APITaskDefinition"
+      DeploymentConfiguration:
+        MaximumPercent: 100
+        MinimumHealthyPercent: 0
+  APIFargateAlb:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      SecurityGroups:
+        - !GetAtt APIFargateAlbSG.GroupId
+      Name: video-stream-blocker-alb
+      Subnets:
+        - subnet-580b0331
+        - subnet-7102210a
+        - subnet-c40f7b89
+      Type: application
+  APIFargateTargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      Name: video-stream-blocker-cluster-tg
+      VpcId: vpc-9d55b7f5
+      Protocol: HTTP
+      Port: 8080
+      HealthCheckPath: /connect/api
+      TargetType: ip
+  Listener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref APIFargateTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref APIFargateAlb
+      Port: 80
+      Protocol: HTTP
+  APIFargateAlbSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: SG for the Fargate ALB
+      GroupName: FargateAlbSG
+      SecurityGroupIngress:
+        - CidrIpv6: ::/0
+          FromPort: 80
+          ToPort: 80
+          IpProtocol: TCP
+          Description: 'Inbound rule for IPv6 traffic'
+        - CidrIp: 0.0.0.0/0
+          FromPort: 80
+          ToPort: 80
+          IpProtocol: TCP
+          Description: 'Inbound rule for IPv4 traffic'
+  APIFargateContainersSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: SG for traffic between ALB and containers
+      GroupName: APIAlb2FargateContainers
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          SourceSecurityGroupId: !GetAtt APIFargateAlbSG.GroupId
+          Description: 'Inbound rule for all traffic'
