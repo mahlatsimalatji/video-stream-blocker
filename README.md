@@ -70,6 +70,6 @@ run ./deploy/deploy.sh to build and push docker image to ECR
 Provision cloud tools using ./deploy/cloudformation/deploy-api.yml 
 
 
-###  Serverless deployment
+###  Serverless approach
 Client ---REST Api--> API Gateway ---Proxy Request--> Lambda ---CRUD--> DynamoDB
 
